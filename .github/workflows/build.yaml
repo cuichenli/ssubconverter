@@ -15,3 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: convert
         run: ./generate.sh
+        env:
+          SUBSCRIPTION_URL: ${{ secrets.SUBSCRIPTION_URL }}
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          SUBCONVERTER_VERSION: $${{ vars.SUBCONVERTER_VERSION }}
