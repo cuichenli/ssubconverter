@@ -35,4 +35,5 @@ token = ${GIST_TOKEN}
 id = ${GIST_ID}
 EOF
 
-./subconverter -g --artifact surfboard,clash --log out.tmp 
+./subconverter -g --artifact surfboard --log out-surfboard.tmp 
+./subconverter -g --artifact clash --log out-clash.tmp 
