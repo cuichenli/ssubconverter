@@ -20,6 +20,7 @@ target=surfboard
 url=${SUBSCRIPTION_URL}
 upload=true
 upload_path=surfboard
+udp=true
 
 [clash]
 path=output.yaml
@@ -27,6 +28,7 @@ target=clash
 url=${SUBSCRIPTION_URL}
 upload=true
 upload_path=clash
+udp=true
 EOF
 
 cat <<EOF > gistconf.ini
