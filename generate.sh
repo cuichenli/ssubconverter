@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-SUBCONVERTER_VERSION=${SUBCONVERTER_VERSION:-0.9.0}
+SUBCONVERTER_VERSION=${SUBCONVERTER_VERSION:-0.9.8}
 EXTRACTED_DIRECTORY=subconverter_release
 SUBSCRIPTION_URL=${SUBSCRIPTION_URL:?what are you doing? there is no SUBSCRIPTION_URL}
 GIST_TOKEN=${GIST_TOKEN:?what are you doing? there is no GIST_TOKEN}
 GIST_ID=${GIST_ID:?what are you doing? there is no GIST_ID}
 
-wget -O subconverter_release.tar.gz "https://github.com/tindy2013/subconverter/releases/download/v${SUBCONVERTER_VERSION}/subconverter_linux64.tar.gz"
+wget -O subconverter_release.tar.gz "https://github.com/asdlokj1qpi233/subconverter/releases/download/v${SUBCONVERTER_VERSION}/subconverter_linux64.tar.gz"
 tar xvf ./subconverter_release.tar.gz 
 
 mv ./subconverter "./${EXTRACTED_DIRECTORY}"
