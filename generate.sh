@@ -29,6 +29,14 @@ url=${SUBSCRIPTION_URL}
 upload=true
 upload_path=clash
 udp=true
+
+[singbox]
+path=output.yaml
+target=singbox
+url=${SUBSCRIPTION_URL}
+upload=true
+upload_path=singbox
+udp=true
 EOF
 
 cat <<EOF > gistconf.ini
@@ -39,3 +47,4 @@ EOF
 
 ./subconverter -g --artifact surfboard --log out-surfboard.tmp 
 ./subconverter -g --artifact clash --log out-clash.tmp 
+./subconverter -g --artifact singbox --log out-singbox.tmp 
