@@ -53,7 +53,7 @@ updateGist(process.env.GIST_ID, {
     }, 
     description: "",
     token: process.env.GIST_TOKEN }).then(res => {
-        console.log("Gist updated:", res.html_url);
+        console.log("Gist updated");
     }).catch(err => {
         console.error("Error updating gist:", err.message);
     });
