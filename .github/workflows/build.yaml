@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm install -g @bitwarden/cli
       - name: convert
-        run: ./generate.sh
+        run: ./main.sh
         env:
           GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
           SUBCONVERTER_VERSION: ${{ vars.SUBCONVERTER_VERSION }}
