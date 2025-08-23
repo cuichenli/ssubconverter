@@ -16,7 +16,10 @@ jobs:
       - name: convert
         run: ./generate.sh
         env:
-          SUBSCRIPTION_URL: ${{ secrets.SUBSCRIPTION_URL }}
           GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
           SUBCONVERTER_VERSION: ${{ vars.SUBCONVERTER_VERSION }}
           GIST_ID: ${{ secrets.GIST_ID }}
+          VAULTWARDEN_SERVER_URL: ${{ secrets.VAULTWARDEN_SERVER_URL }}
+          API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
+          API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
+          MASTER_PASSWORD: ${{ secrets.MASTER_PASSWORD }}
