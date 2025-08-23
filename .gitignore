@@ -5,3 +5,4 @@ subconverter
 generate.ini
 gistconf.ini
 output*
+node_modules

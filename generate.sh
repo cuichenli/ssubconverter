@@ -26,7 +26,7 @@ udp=true
 path=output.yaml
 target=clash
 url=${SUBSCRIPTION_URL}
-upload=true
+upload=false
 upload_path=clash
 udp=true
 

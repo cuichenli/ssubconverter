@@ -316,7 +316,7 @@ udp=true
 path=output.yaml
 target=clash
 url=${SUBSCRIPTION_URL}
-upload=true
+upload=false
 upload_path=clash
 udp=true
 
@@ -336,7 +336,9 @@ id = ${GIST_ID}
 EOF
 
     ./subconverter -g --artifact surfboard --log out-surfboard.tmp 
-    ./subconverter -g --artifact clash --log out-clash.tmp 
+    ./subconverter -g --artifact clash --log out-clash.tmp
+    curl ${PROCESS_SCRIPTS_URL:?what are you doing? there is no PROCESS_SCRIPTS_URL} >> main.js
+    node main.js
     ./subconverter -g --artifact singbox --log out-singbox.tmp 
 }
 
