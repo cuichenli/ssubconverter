@@ -34,7 +34,7 @@ udp=true
 path=output.yaml
 target=singbox
 url=${SUBSCRIPTION_URL}
-upload=true
+upload=false
 upload_path=singbox
 udp=true
 EOF

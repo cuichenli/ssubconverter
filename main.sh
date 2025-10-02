@@ -335,11 +335,22 @@ token = ${GIST_TOKEN}
 id = ${GIST_ID}
 EOF
 
+    git clone git@github.com:Toperlock/sing-box-subscribe.git
     ./subconverter -g --artifact surfboard --log out-surfboard.tmp 
     ./subconverter -g --artifact clash --log out-clash.tmp
     curl ${PROCESS_SCRIPTS_URL:?what are you doing? there is no PROCESS_SCRIPTS_URL} >> main.js
     node main.js
     ./subconverter -g --artifact singbox --log out-singbox.tmp 
+    rm sing-box-subscribe/config_template/*
+    cp sub.json sing-box-subscribe/config_template/
+    jq --arg url "https://gist.githubusercontent.com/cuichenli/$GIST_ID/raw/clash" '.subscribes[0].url = $url' providers.json > tmp.json && mv tmp.json providers.json
+    cp providers.json ./sing-box-subscribe/
+    cd sing-box-subscribe 
+    uv venv .venv
+    uv pip install -r requirements.txt 
+    uv run main.py --template_index=0
+    cd ..
+    node main-extra.js
 }
 
 # Run main function
