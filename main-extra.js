@@ -1,5 +1,6 @@
-// This script reads sing-box-subscribe/config.json, finds any outbound
-// object with tag === "my", and adds/sets the field detour: "all".
+// This script reads sing-box-subscribe/config.json and:
+// 1) Ensures any outbound object with tag === "my" or "au" has detour: "all".
+// 2) Removes entries "au" or "my" from any selector outbound whose tag === "all".
 
 const fs = require("fs");
 const path = require("path");
@@ -16,25 +17,54 @@ function saveConfig(filePath, data) {
   fs.writeFileSync(filePath, formatted + "\n", "utf8");
 }
 
-function updateOutboundsDetour(config) {
-  let modified = 0;
+function ensureDetourForMyAu(config) {
+  let updated = 0;
 
   const visit = (node) => {
     if (!node || typeof node !== "object") return;
 
-    // If this node has an `outbounds` array, inspect its elements.
-    if (Array.isArray(node.outbounds)) {
-      for (const item of node.outbounds) {
-        if (item && typeof item === "object" && (item.tag === "my" || item.tag === "au")) {
-          if (item.detour !== "all") {
-            item.detour = "all";
-            modified += 1;
-          }
-        }
+    // If this node appears to be an outbound object with a tag
+    if (typeof node.tag === "string" && (node.tag === "my" || node.tag === "au")) {
+      if (node.detour !== "all") {
+        node.detour = "all";
+        updated += 1;
       }
     }
 
-    // Recurse into all object properties to catch nested structures.
+    // Recurse into object properties to catch nested structures.
+    for (const key of Object.keys(node)) {
+      const value = node[key];
+      if (value && typeof value === "object") {
+        if (Array.isArray(value)) {
+          for (const item of value) visit(item);
+        } else {
+          visit(value);
+        }
+      }
+    }
+  };
+
+  visit(config);
+  return updated;
+}
+
+function removeAuMyFromAllSelector(config) {
+  let removed = 0;
+
+  const visit = (node) => {
+    if (!node || typeof node !== "object") return;
+
+    // Match an outbound selector with tag === "all"
+    if (node.tag === "all" && Array.isArray(node.outbounds)) {
+      const before = node.outbounds.length;
+      node.outbounds = node.outbounds.filter((v) => {
+        // Only filter string entries exactly matching "au" or "my"
+        return !(typeof v === "string" && (v === "au" || v === "my"));
+      });
+      removed += before - node.outbounds.length;
+    }
+
+    // Recurse into object properties to catch nested structures.
     for (const key of Object.keys(node)) {
       const value = node[key];
       if (value && typeof value === "object") visit(value);
@@ -42,7 +72,7 @@ function updateOutboundsDetour(config) {
   };
 
   visit(config);
-  return modified;
+  return removed;
 }
 
 async function updateGist(gistId, options) {
@@ -91,13 +121,16 @@ async function updateGist(gistId, options) {
 
 function main() {
   const config = loadConfig(CONFIG_PATH);
-  const changes = updateOutboundsDetour(config);
-  if (changes > 0) {
+  const detourUpdates = ensureDetourForMyAu(config);
+  const removed = removeAuMyFromAllSelector(config);
+
+  if (detourUpdates > 0 || removed > 0) {
     saveConfig(CONFIG_PATH, config);
-    console.log(`Updated detour=\"all\" on ${changes} outbound(s) tagged 'my'.`);
-  } else {
-    console.log("No matching outbound with tag 'my' found or already up to date.");
   }
+
+  console.log(
+    `Detour updates: ${detourUpdates}; removed from 'all': ${removed}.`
+  );
 
   // Always upload the current config.json to Gist as "singbox".
   const gistId = process.env.GIST_ID;
