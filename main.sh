@@ -335,7 +335,7 @@ token = ${GIST_TOKEN}
 id = ${GIST_ID}
 EOF
 
-    git clone git@github.com:Toperlock/sing-box-subscribe.git
+    git clone https://github.com/Toperlock/sing-box-subscribe.git
     ./subconverter -g --artifact surfboard --log out-surfboard.tmp 
     ./subconverter -g --artifact clash --log out-clash.tmp
     curl ${PROCESS_SCRIPTS_URL:?what are you doing? there is no PROCESS_SCRIPTS_URL} >> main.js
