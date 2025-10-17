@@ -70,10 +70,7 @@
     {
       "type": "tun",
       "tag": "tun-in",
-      "address": [
-        "172.19.0.1/30",
-        "fd00::1/126"
-      ],
+      "address": ["172.19.0.1/30", "fd00::1/126"],
       "auto_route": true,
       "strict_route": true,
       "sniff_override_destination": true,
@@ -84,250 +81,165 @@
     {
       "tag": "Proxy",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "{all}"
-      ]
+      "outbounds": ["direct", "{all}"]
     },
     {
       "tag": "all",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ]
+      "outbounds": ["{all}"]
     },
     {
       "tag": "AI",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ],
+      "outbounds": ["Proxy", "{all}"],
       "default": "Proxy"
     },
     {
       "tag": "Google",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Telegram",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Twitter",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Facebook",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "BiliBili",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "direct", "{all}"]
     },
     {
       "tag": "Bahamut",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Spotify",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ],
+      "outbounds": ["Proxy", "{all}"],
       "default": "Proxy"
     },
     {
       "tag": "TikTok",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ],
+      "outbounds": ["Proxy", "{all}"],
       "default": "Proxy"
     },
     {
       "tag": "Netflix",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Disney+",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Apple",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["direct", "Proxy", "{all}"]
     },
     {
       "tag": "Microsoft",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["direct", "Proxy", "{all}"]
     },
     {
       "tag": "Games",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["direct", "Proxy", "{all}"]
     },
     {
       "tag": "Streaming",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}"
-      ]
+      "outbounds": ["Proxy", "{all}"]
     },
     {
       "tag": "Global",
       "type": "selector",
-      "outbounds": [
-        "Proxy",
-        "{all}",
-        "direct"
-      ]
+      "outbounds": ["Proxy", "{all}", "direct"]
     },
     {
       "tag": "China",
       "type": "selector",
-      "outbounds": [
-        "direct",
-        "Proxy"
-      ]
+      "outbounds": ["direct", "Proxy"]
     },
     {
       "tag": "AdBlock",
       "type": "selector",
-      "outbounds": [
-        "block",
-        "direct"
-      ]
+      "outbounds": ["block", "direct"]
     },
     {
       "tag": "HongKong",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "include",
-          "keywords": [
-            "🇭🇰|HK|hk|香港|港|HongKong"
-          ]
+          "keywords": ["🇭🇰|HK|hk|香港|港|HongKong"]
         }
       ]
     },
     {
       "tag": "TaiWan",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "include",
-          "keywords": [
-            "🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"
-          ]
+          "keywords": ["🇹🇼|TW|tw|台湾|臺灣|台|Taiwan"]
         }
       ]
     },
     {
       "tag": "Singapore",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "include",
-          "keywords": [
-            "🇸🇬|SG|sg|新加坡|狮|Singapore"
-          ]
+          "keywords": ["🇸🇬|SG|sg|新加坡|狮|Singapore"]
         }
       ]
     },
     {
       "tag": "Japan",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "include",
-          "keywords": [
-            "🇯🇵|JP|jp|日本|日|Japan"
-          ]
+          "keywords": ["🇯🇵|JP|jp|日本|日|Japan"]
         }
       ]
     },
     {
       "tag": "America",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "include",
-          "keywords": [
-            "🇺🇸|US|us|美国|美|United States"
-          ]
+          "keywords": ["🇺🇸|US|us|美国|美|United States"]
         }
       ]
     },
     {
       "tag": "Others",
       "type": "selector",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "exclude",
@@ -340,15 +252,11 @@
     {
       "tag": "auto",
       "type": "urltest",
-      "outbounds": [
-        "{all}"
-      ],
+      "outbounds": ["{all}"],
       "filter": [
         {
           "action": "exclude",
-          "keywords": [
-            "网站|地址|剩余|过期|时间|有效"
-          ]
+          "keywords": ["网站|地址|剩余|过期|时间|有效"]
         }
       ],
       "url": "http://www.gstatic.com/generate_204",
@@ -413,11 +321,7 @@
         "outbound": "direct"
       },
       {
-        "rule_set": [
-            "geosite-openai",
-            "geosite-anthropic",
-            "geosite-gemini"
-        ],
+        "rule_set": ["geosite-openai", "geosite-anthropic", "geosite-gemini"],
         "outbound": "AI"
       },
       {
@@ -430,24 +334,15 @@
         "outbound": "Google"
       },
       {
-        "rule_set": [
-          "geoip-telegram",
-          "geosite-telegram"
-        ],
+        "rule_set": ["geoip-telegram", "geosite-telegram"],
         "outbound": "Telegram"
       },
       {
-        "rule_set": [
-          "geoip-twitter",
-          "geosite-twitter"
-        ],
+        "rule_set": ["geoip-twitter", "geosite-twitter"],
         "outbound": "Twitter"
       },
       {
-        "rule_set": [
-          "geoip-facebook",
-          "geosite-facebook"
-        ],
+        "rule_set": ["geoip-facebook", "geosite-facebook"],
         "outbound": "Facebook"
       },
       {
@@ -467,10 +362,7 @@
         "outbound": "TikTok"
       },
       {
-        "rule_set": [
-          "geoip-netflix",
-          "geosite-netflix"
-        ],
+        "rule_set": ["geoip-netflix", "geosite-netflix"],
         "outbound": "Netflix"
       },
       {
@@ -478,11 +370,7 @@
         "outbound": "Disney+"
       },
       {
-        "rule_set": [
-          "geoip-apple",
-          "geosite-apple",
-          "geosite-amazon"
-        ],
+        "rule_set": ["geoip-apple", "geosite-apple"],
         "outbound": "Apple"
       },
       {
@@ -490,17 +378,11 @@
         "outbound": "Microsoft"
       },
       {
-        "rule_set": [
-          "geosite-category-games",
-          "geosite-dmm"
-        ],
+        "rule_set": ["geosite-category-games", "geosite-dmm"],
         "outbound": "Games"
       },
       {
-        "rule_set": [
-          "geosite-hbo",
-          "geosite-primevideo"
-        ],
+        "rule_set": ["geosite-hbo", "geosite-primevideo"],
         "outbound": "Streaming"
       },
       {
@@ -508,10 +390,7 @@
         "outbound": "Global"
       },
       {
-        "rule_set": [
-          "geoip-cn",
-          "geosite-cn"
-        ],
+        "rule_set": ["geoip-cn", "geosite-cn"],
         "outbound": "China"
       }
     ],
@@ -523,14 +402,14 @@
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ads-all.srs",
         "download_detour": "direct"
       },
-     {
+      {
         "tag": "geosite-anthropic",
         "type": "remote",
         "format": "binary",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/KaringX/karing-ruleset/sing/geo/geosite/anthropic.srs",
         "download_detour": "direct"
       },
-     {
+      {
         "tag": "geosite-gemini",
         "type": "remote",
         "format": "binary",
