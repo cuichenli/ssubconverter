@@ -117,7 +117,7 @@
     {
       "tag": "BiliBili",
       "type": "selector",
-      "outbounds": ["Proxy", "direct", "{all}"]
+      "outbounds": ["direct", "Proxy", "{all}"]
     },
     {
       "tag": "Bahamut",
