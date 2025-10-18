@@ -321,7 +321,12 @@
         "outbound": "direct"
       },
       {
-        "rule_set": ["geosite-openai", "geosite-anthropic", "geosite-gemini"],
+        "rule_set": [
+          "geosite-openai",
+          "geosite-anthropic",
+          "geosite-gemini",
+          "geosite-imgur"
+        ],
         "outbound": "AI"
       },
       {
@@ -442,6 +447,13 @@
         "type": "remote",
         "format": "binary",
         "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/google.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-imgur",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/imgur.srs",
         "download_detour": "direct"
       },
       {
