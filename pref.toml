@@ -37,7 +37,7 @@ enable_filter = false
 #'''
 
 # Setting an external config file as default when none is specified, supports local files/URL
-default_external_config = "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/config/ACL4SSR_Online_Full_AdblockPlus.ini"
+default_external_config = "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini"
 
 # The file scope limit of the 'rule_base' options in external configs.
 base_path = "base"
