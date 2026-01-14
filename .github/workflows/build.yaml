@@ -14,10 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: npm i @bitwarden/cli@2025.5.0
+
       - uses: pnpm/action-setup@v4
         with:
           run_install: true
+      - run: pnpm i @bitwarden/cli@2025.5.0
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v6
         with:
