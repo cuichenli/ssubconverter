@@ -134,8 +134,13 @@ login_with_api_key() {
     bw logout > /dev/null 2>&1 || true
     
     # Login using API key method
-    if ! bw login --apikey > /dev/null 2>&1; then
+    local login_output
+    if ! login_output=$(bw login --apikey 2>&1); then
         print_error "Failed to login with API key"
+        if [ -n "$login_output" ]; then
+            print_error "bw login output:"
+            echo "$login_output"
+        fi
         print_error "Please verify:"
         print_error "1. Your API credentials are correct"
         print_error "2. Your Vaultwarden server is accessible"
