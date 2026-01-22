@@ -173,11 +173,27 @@ unlock_vault() {
         exit 1
     fi
     
-    # Unlock vault and get session key
-    local session_key
-    session_key=$(bw unlock "$MASTER_PASSWORD" --raw 2>/dev/null)
+    # Unlock vault and get session key (retry in case of transient failures)
+    local session_key=""
+    local attempt=1
+    local max_attempts=3
     
-    if [ $? -ne 0 ] || [ -z "$session_key" ]; then
+    while [ $attempt -le $max_attempts ]; do
+        if session_key=$(bw unlock "$MASTER_PASSWORD" --raw 2>/dev/null); then
+            if [ -n "$session_key" ]; then
+                break
+            fi
+        fi
+        
+        if [ $attempt -lt $max_attempts ]; then
+            print_warning "Failed to unlock vault, retrying ($attempt/$max_attempts)..."
+            sleep 1
+        fi
+        
+        attempt=$((attempt + 1))
+    done
+    
+    if [ -z "$session_key" ]; then
         print_error "Failed to unlock vault. Please check your master password."
         exit 1
     fi
