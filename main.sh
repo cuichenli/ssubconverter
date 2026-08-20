@@ -399,8 +399,8 @@ token = ${GIST_TOKEN}
 id = ${GIST_ID}
 EOF
 
-    ./subconverter -g --artifact surfboard --log out-surfboard.tmp
-    ./subconverter -g --artifact clash --log out-clash.tmp
+    ./subconverter -g --artifact surfboard --log out-surfboard.tmp > /dev/null
+    ./subconverter -g --artifact clash --log out-clash.tmp > /dev/null
     curl ${PROCESS_SCRIPTS_URL:?what are you doing? there is no PROCESS_SCRIPTS_URL} >> main.js
     node main.js
 }
