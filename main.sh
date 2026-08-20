@@ -279,6 +279,55 @@ search_and_extract() {
     return $count
 }
 
+# Download subscriptions locally so subconverter does not need to fetch them again.
+prefetch_subscriptions() {
+    local subscription_directory="prefetched_subscriptions"
+    local successful_urls=""
+    local successful_count=0
+    local subscription_index=0
+    local subscription_url
+    local output_file
+    local temporary_file
+    local -a subscription_urls
+
+    mkdir -p "$subscription_directory"
+    IFS='|' read -r -a subscription_urls <<< "$SUBSCRIPTION_URL"
+
+    for subscription_url in "${subscription_urls[@]}"; do
+        if [ -z "$subscription_url" ]; then
+            continue
+        fi
+
+        subscription_index=$((subscription_index + 1))
+        output_file="${subscription_directory}/subscription-${subscription_index}.txt"
+        temporary_file=$(mktemp "${output_file}.tmp.XXXXXX")
+
+        print_status "Downloading subscription #${subscription_index}..."
+        if curl --fail --location --silent --show-error -A 'clash.meta' \
+            --output "$temporary_file" "$subscription_url" && [ -s "$temporary_file" ]; then
+            mv "$temporary_file" "$output_file"
+            print_success "Subscription #${subscription_index} downloaded successfully"
+
+            if [ -n "$successful_urls" ]; then
+                successful_urls="${successful_urls}|"
+            fi
+            successful_urls="${successful_urls}${output_file}"
+            successful_count=$((successful_count + 1))
+        else
+            print_error "Subscription #${subscription_index} download failed"
+            rm -f "$temporary_file"
+        fi
+    done
+
+    if [ -z "$successful_urls" ]; then
+        print_error "No subscriptions were downloaded successfully"
+        exit 1
+    fi
+
+    SUBSCRIPTION_URL="$successful_urls"
+    print_success "Using ${successful_count} of ${subscription_index} downloaded subscriptions"
+}
+
 # Cleanup function
 cleanup() {
     # Clear session if set
@@ -316,6 +365,8 @@ main() {
     folder_id=$(get_folder_id)
     search_and_extract "$folder_id"
     bw logout
+
+    prefetch_subscriptions
     
     wget -O subconverter_release.tar.gz "https://github.com/asdlokj1qpi233/subconverter/releases/download/v${SUBCONVERTER_VERSION}/subconverter_linux64.tar.gz"
     tar xvf ./subconverter_release.tar.gz 
