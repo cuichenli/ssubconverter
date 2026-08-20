@@ -3,6 +3,7 @@
 import * as yaml from "js-yaml"
 import "fs"
 import { readFileSync } from "fs"
+import { cleanInvalidHysteriaProxies } from "./cleanup.mjs"
 
 const file = yaml.load(readFileSync("./output.yaml", "utf8"))
 
@@ -47,9 +48,20 @@ const updateGist = async (gistId, options) => {
     }
 }
 
-updateGist(process.env.GIST_ID, { 
+const processedFile = main(file)
+const cleanedFile = cleanInvalidHysteriaProxies(processedFile)
+const removedProxyCount = Array.isArray(processedFile?.proxies) &&
+    Array.isArray(cleanedFile?.proxies)
+    ? processedFile.proxies.length - cleanedFile.proxies.length
+    : 0
+
+if (removedProxyCount > 0) {
+    console.log(`Removed ${removedProxyCount} invalid Hysteria proxy(s)`)
+}
+
+updateGist(process.env.GIST_ID, {
     files: {
-        "clash": yaml.dump(main(file)),
+        "clash": yaml.dump(cleanedFile),
     }, 
     description: "",
     token: process.env.GIST_TOKEN }).then(res => {
