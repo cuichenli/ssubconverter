@@ -9,8 +9,11 @@ VAULTWARDEN_SERVER_URL=${VAULTWARDEN_SERVER_URL:?what are you doing? there is no
 API_CLIENT_ID=${API_CLIENT_ID:?what are you doing? there is no API_CLIENT_ID}                           # Your API client ID
 API_CLIENT_SECRET=${API_CLIENT_SECRET:?what are you doing? there is no API_CLIENT_SECRET}                          # Your API client secret
 FOLDER_NAME="机场"
-MASTER_PASSWORD=${MASTER_PASSWORD:?what are you doing? there is no MASTER_PASSWORD}    
+MASTER_PASSWORD=${MASTER_PASSWORD:?what are you doing? there is no MASTER_PASSWORD}
 SUBSCRIPTION_URL=""
+# Parallel arrays: SUBSCRIPTION_NAMES[i] is the vault item name for SUBSCRIPTION_URLS[i]
+SUBSCRIPTION_NAMES=()
+SUBSCRIPTION_URLS=()
 
 SUBCONVERTER_VERSION=${SUBCONVERTER_VERSION:-0.9.8}
 EXTRACTED_DIRECTORY=subconverter_release
@@ -258,25 +261,42 @@ search_and_extract() {
     fi
     
     print_status "Extracting password items and notes..."
-    
+
     local count=0
-    
-    # Process each item
-    SUBSCRIPTION_URL=$(echo "$login_items" | jq -c '.' | while read -r item; do
+    local item
+    local name
+    local notes
+
+    SUBSCRIPTION_NAMES=()
+    SUBSCRIPTION_URLS=()
+
+    # Process each item (no subshell, so the arrays survive the loop)
+    while IFS= read -r item; do
         if [ -z "$item" ] || [ "$item" = "null" ]; then
             continue
         fi
-        
-        local notes=$(echo "$item" | jq -r '.notes // ""')
-        if [ -n "$notes" ] && [ "$notes" != "null" ] && [ "$notes" != "" ]; then
-            echo -n "$notes|"
+
+        name=$(echo "$item" | jq -r '.name // ""')
+        notes=$(echo "$item" | jq -r '.notes // ""')
+
+        if [ -z "$name" ] || [ "$name" = "null" ]; then
+            name="<unnamed item>"
         fi
-        count=$((count + 1))
-    done)
 
+        if [ -n "$notes" ] && [ "$notes" != "null" ]; then
+            SUBSCRIPTION_NAMES+=("$name")
+            SUBSCRIPTION_URLS+=("$notes")
+            count=$((count + 1))
+        else
+            print_warning "Item '$name' has no subscription URL in its notes, skipping"
+        fi
+    done < <(echo "$login_items" | jq -c '.')
 
-    print_success "Extraction complete! Found $count password items."    
-    return $count
+    # Keep the legacy '|' separated form for anything that still reads it
+    SUBSCRIPTION_URL=$(IFS='|'; echo "${SUBSCRIPTION_URLS[*]}")
+
+    print_success "Extraction complete! Found $count password items."
+    return 0
 }
 
 # Download subscriptions locally so subconverter does not need to fetch them again.
@@ -284,29 +304,33 @@ prefetch_subscriptions() {
     local subscription_directory="prefetched_subscriptions"
     local successful_urls=""
     local successful_count=0
+    local total_count=${#SUBSCRIPTION_URLS[@]}
     local subscription_index=0
     local subscription_url
+    local subscription_name
     local output_file
     local temporary_file
-    local -a subscription_urls
+    local -a failed_names=()
 
     mkdir -p "$subscription_directory"
-    IFS='|' read -r -a subscription_urls <<< "$SUBSCRIPTION_URL"
 
-    for subscription_url in "${subscription_urls[@]}"; do
+    while [ $subscription_index -lt $total_count ]; do
+        subscription_url="${SUBSCRIPTION_URLS[$subscription_index]}"
+        subscription_name="${SUBSCRIPTION_NAMES[$subscription_index]}"
+        subscription_index=$((subscription_index + 1))
+
         if [ -z "$subscription_url" ]; then
             continue
         fi
 
-        subscription_index=$((subscription_index + 1))
         output_file="${subscription_directory}/subscription-${subscription_index}.txt"
         temporary_file=$(mktemp "${output_file}.tmp.XXXXXX")
 
-        print_status "Downloading subscription #${subscription_index}..."
+        print_status "Downloading subscription #${subscription_index}/${total_count}: ${subscription_name}"
         if curl --fail --location --silent --show-error -A 'clash.meta' \
             --output "$temporary_file" "$subscription_url" && [ -s "$temporary_file" ]; then
             mv "$temporary_file" "$output_file"
-            print_success "Subscription #${subscription_index} downloaded successfully"
+            print_success "Downloaded '${subscription_name}' -> ${output_file}"
 
             if [ -n "$successful_urls" ]; then
                 successful_urls="${successful_urls}|"
@@ -314,7 +338,8 @@ prefetch_subscriptions() {
             successful_urls="${successful_urls}${output_file}"
             successful_count=$((successful_count + 1))
         else
-            print_error "Subscription #${subscription_index} download failed"
+            print_error "Failed to download '${subscription_name}' (subscription #${subscription_index})"
+            failed_names+=("$subscription_name")
             rm -f "$temporary_file"
         fi
     done
@@ -324,8 +349,12 @@ prefetch_subscriptions() {
         exit 1
     fi
 
+    if [ ${#failed_names[@]} -gt 0 ]; then
+        print_warning "Failed items: ${failed_names[*]}"
+    fi
+
     SUBSCRIPTION_URL="$successful_urls"
-    print_success "Using ${successful_count} of ${subscription_index} downloaded subscriptions"
+    print_success "Using ${successful_count} of ${total_count} downloaded subscriptions"
 }
 
 # Cleanup function
